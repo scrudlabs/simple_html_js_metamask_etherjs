@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title> METAMASK CONNEXION</title>
+  </head>
+  <body>
+    <div>
+      <h5 id="userAdd">Please connect Your Metamask Wallet ...
+      <h5 id="userChain">Your Current Chain is ...
+      <h5 id="userBal">Your Balance is ...
+      <h5 id="userGas">Your Current gasPrice is ...
+    </div>
+    <script type="module">
+    import { ethers } from "https://cdn-cors.ethers.io/lib/ethers-5.5.4.esm.min.js";    
+const provider = new ethers.providers.Web3Provider(window.ethereum)
+await provider.send("eth_requestAccounts", []);
+  const signer = provider.getSigner()
+
+ 
+      const userBal = await signer.getBalance();
+      const userGas = await signer.getGasPrice();
+      const userAddress = await signer.getAddress();
+      const userChainID = await signer.getChainId();
+      const userGasPrice = await ethers.utils.formatEther(userGas);
+      const userBalance = await ethers.utils.formatEther(userBal);
+
+      if (userChainID == 1){
+        document.getElementById("userChain").innerText = "Chain ID: " + "Ethereum Mainnet";
+        document.getElementById("userBal").innerText = "User Balance: " + userBalance + " ETH";
+        document.getElementById("userGas").innerText = "User Gas: " + userGasPrice + " ETH";
+
+      } else if (userChainID == 3) {
+        document.getElementById("userChain").innerText = "Chain ID: " + userChainID;
+        document.getElementById("userBal").innerText = "User Balance: " + userBalance + "BNB";
+        document.getElementById("userGas").innerText = "User Gas: " + userGasPrice + " BNB";
+
+      } else {
+        document.getElementById("userChain").innerText = "Chain ID: " + userChainID;
+        document.getElementById("userBal").innerText = "User Balance: " + userBalance + "";
+        document.getElementById("userGas").innerText = "User Gas: " + userGasPrice + "";
+      }
+      document.getElementById("userAdd").innerText = "Your Receiving Address is: " + userAddress;
+      provider.on("network", (newNetwork, oldNetwork) => {
+        if (oldNetwork) {
+            window.location.reload();
+        }
+      });
+    </script>
+  </body>
+</html>
